@@ -1,0 +1,56 @@
+#!/bin/zsh
+
+START='http://server.arcgisonline.com/arcgis/rest/services/'
+END='/MapServer/tile/'
+VR=0.005
+
+makejpg ()    {
+    for F in $(find shade -type f -name "*png")
+    do 
+        ls ${F/png/jpg} || convert $F ${F/png/jpg}
+    done
+
+    for F in $(find world -type f -name "*png")
+    do 
+        ls ${F/png/jpg} || convert $F ${F/png/jpg}
+    done
+
+    find ./ -type f -name "*.jpg"|grep -v compo|sed 's/.\/\/shade//;s/.\/\/world//;'|sort -u|while read D
+    do 
+        ls composite/$D && continue 
+        mkdir -p $(dirname composite/$D) 
+        ls world/$D shade/$D  && convert world/$D shade/$D \
+            -compose hardlight -composite \
+            composite/$D 
+    done
+}
+
+gettiles () {
+    echo downloadosmtiles.pl --lat=$1 --lon=$2 --zoom=$3 ...
+    downloadosmtiles.pl --lat=$1 --lon=$2 --zoom=$3 --destdir=world --baseurl=${START}'World_Imagery'${END} 
+    downloadosmtiles.pl --lat=$1 --lon=$2 --zoom=$3 --destdir=shade --baseurl=${START}'Elevation/World_Hillshade_Dark'${END} 
+}
+
+
+gettiles -90:90 -180:180 0:6
+
+grep -v  \"  ~/.seiscomp3/bna/volcano/volcano.bna|awk -F',' '{print $1,$2}'| while read LO LA
+do
+    #if [[ $LA -lt 7 || $LA -gt 14 || $LO -lt -90 || $LO -gt -80 ]]; then continue ; fi
+    LA1=$(( $LA - $VR ))
+    LA2=$(( $LA + $VR ))
+    LO1=$(( $LO - $VR ))
+    LO2=$(( $LO + $VR ))
+    gettiles ${LA1}:${LA2} ${LO1}:${LO2} 7:15
+done
+
+gettiles      7:14           -90:-80       7:9
+gettiles 8.1367:11.0218 -85.7647:-82.6349 10:12
+
+#downloadosmtiles.pl --lat=7:14 --lon=-90:-80 --zoom=7:9 --destdir=world --baseurl=${START}'World_Imagery'${END} 
+#downloadosmtiles.pl --lat=7:14 --lon=-90:-80 --zoom=7:9 --destdir=shade --baseurl=${START}'Elevation/World_Hillshade_Dark'${END} 
+
+#downloadosmtiles.pl --lat=8.1367:11.0218 --lon=-85.7647:-82.6349 --zoom=10:12 --destdir=world --baseurl=${START}'World_Imagery'${END} 
+#downloadosmtiles.pl --lat=8.1367:11.0218 --lon=-85.7647:-82.6349 --zoom=10:12 --destdir=shade --baseurl=${START}'Elevation/World_Hillshade_Dark'${END} 
+
+makejpg
