@@ -16,9 +16,20 @@ Maps combining ESRI World Imagery and Hillshade map tiles with densified resolut
 
 ## How
 Install [downloadosmtiles.pl](https://metacpan.org/pod/release/ROTKRAUT/Geo-OSM-Tiles-0.02/downloadosmtiles.pl) and [ImageMagick](https://imagemagick.org/index.php), adapt and run `makemap`. 
+Choose if you need user specific or system-wise configuration:
+
+### User configuration
 You can then move the `bna` and `map` directories to `~/.seiscomp*/` and add the following to `~/.seiscomp*/global.cfg`:
 ```bash
 map.location = @CONFIGDIR@/map/%l/%r/%c.jpg
+map.format = mercator
+scheme.colors.map.cityLabels = ffffffff
+```
+
+### System-wise configuration
+You might then move the `bna` and `map` directories to `$SEISCOMP_ROOT/share/` and add the following to `$SEISCOMP_ROOT/etc/global.cfg`:
+```bash
+map.location = @DATADIR@/map/%l/%r/%c.jpg
 map.format = mercator
 scheme.colors.map.cityLabels = ffffffff
 ```
