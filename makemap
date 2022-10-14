@@ -27,9 +27,9 @@ makemymap () {
 }
 
 gettiles () {
-    echo downloadosmtiles.pl --lat=$1 --lon=$2 --zoom=$3 ...
-    downloadosmtiles.pl --lat=$1 --lon=$2 --zoom=$3 --destdir=world --baseurl=${START}'World_Imagery'${END} 
-    downloadosmtiles.pl --lat=$1 --lon=$2 --zoom=$3 --destdir=shade --baseurl=${START}'Elevation/World_Hillshade_Dark'${END} 
+    echo downloadosmtiles --lat=$1 --lon=$2 --zoom=$3 ...
+    downloadosmtiles --lat=$1 --lon=$2 --zoom=$3 --destdir=world --baseurl=${START}'World_Imagery'${END} 
+    downloadosmtiles --lat=$1 --lon=$2 --zoom=$3 --destdir=shade --baseurl=${START}'Elevation/World_Hillshade_Dark'${END} 
 }
 
 getvolcanoes () {
