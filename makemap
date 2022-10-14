@@ -50,14 +50,18 @@ gettiles    -90:90          -180:180       0:6
 # All volcanoes in the world 
 getvolcanoes
 
-# Central America 
-gettiles      7:14           -90:-80       7:9
+if [ $# -eq 0 ]; then
+    # Central America 
+    gettiles      7:14           -90:-80       7:9
 
-# Costa Rica
-gettiles 8.1367:11.0218 -85.7647:-82.6349 10:12
+    # Costa Rica
+    gettiles 8.1367:11.0218 -85.7647:-82.6349 10:12
 
-# El Salvador
-gettiles 13.03:14.37 -90.45:-87.44 10:12
+    # El Salvador
+    gettiles 13.03:14.37 -90.45:-87.44 10:12
+else
+    gettiles $@
+fi
 
 # Combine tiles in composite images 
 makemymap map
